@@ -7,7 +7,7 @@ const canvasEl = document.querySelector('#canvas');
 const scoreResult = document.querySelector('#score-result');
 const rollBtn = document.querySelector('#roll-btn');
 
-let renderer, scene, camera, diceMesh, physicsWorld;
+let renderer, scene, camera, diceMesh, physicsWorld,totalScore;
 
 const params = {
     numberOfDice: 2,
@@ -215,6 +215,7 @@ function createBoxGeometry() {
 
     return boxGeometry;
 }
+totalScore = 0;
 
 function createInnerGeometry() {
     const baseGeometry = new THREE.PlaneGeometry(1 - 2 * params.edgeRadius, 1 - 2 * params.edgeRadius);
@@ -230,6 +231,7 @@ function createInnerGeometry() {
 }
 
 function addDiceEvents(dice) {
+    
     dice.body.addEventListener('sleep', (e) => {
 
         dice.body.allowSleep = false;
@@ -268,7 +270,7 @@ function addDiceEvents(dice) {
     });
 }
 
-let totalScore = 0;
+
 
 function showRollResults(score) {
     totalScore += score;
@@ -279,12 +281,14 @@ function showRollResults(score) {
         scoreResult.innerHTML += (' + ' + score);
     }
 
-    // Check if all dice have stopped rolling (optional synchronization if needed)
+    // Check if all dice have stopped rolling
     const allDiceStopped = diceArray.every(dice => !dice.body.allowSleep);
     if (allDiceStopped) {
         scoreResult.innerHTML += ' = ' + totalScore;
     }
+
 }
+
 
 function render() {
     physicsWorld.fixedStep();
@@ -305,8 +309,9 @@ function updateSceneSize() {
 }
 
 function throwDice() {
+    console.log('Throw Dice riggered');
+    totalScore = 0;
     scoreResult.innerHTML = '';
-
     diceArray.forEach((d, dIdx) => {
 
         d.body.velocity.setZero();
