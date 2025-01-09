@@ -268,11 +268,21 @@ function addDiceEvents(dice) {
     });
 }
 
+let totalScore = 0;
+
 function showRollResults(score) {
+    totalScore += score;
+    
     if (scoreResult.innerHTML === '') {
         scoreResult.innerHTML += score;
     } else {
-        scoreResult.innerHTML += ('+' + score);
+        scoreResult.innerHTML += (' + ' + score);
+    }
+
+    // Check if all dice have stopped rolling (optional synchronization if needed)
+    const allDiceStopped = diceArray.every(dice => !dice.body.allowSleep);
+    if (allDiceStopped) {
+        scoreResult.innerHTML += ' = ' + totalScore;
     }
 }
 
